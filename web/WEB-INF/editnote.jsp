@@ -14,9 +14,9 @@
     <body>
         <h1>Simple Note Keeper</h1>
         <h2>View Note</h2>
-        <form method="post" action="viewnote">
-            Title: <input type="text" name="title" value="${note.getTitle()}"><br><br>
-            Contents: <textarea name="contents">${note.getContents()}</textarea><br><br>
+        <form method="post" action="note">
+            Title: <input type="text" name="title" value="${note.title}"><br><br>
+            Contents: <textarea name="contents">${note.contents}</textarea><br><br>
             <input type="submit" value="save">
         </form>
     </body>

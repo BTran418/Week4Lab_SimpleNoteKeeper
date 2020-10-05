@@ -37,20 +37,34 @@ public class NoteServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String path = getServletContext().getRealPath("/WEB-INF/note.txt");
-	BufferedReader br = new BufferedReader(new FileReader(new File(path)));
-        
+        BufferedReader br = new BufferedReader(new FileReader(new File(path)));
         this.note.setTitle(br.readLine());
-        this.note.setContents(br.readLine());
-	br.close();
-
+        String contents = "";
+       
+        String next=br.readLine();
+        while (next!=null){
+            contents += next;
+            //contents += "\n";
+            next=br.readLine();
+        }
+        br.close();
+        
+        contents = contents.replaceAll("(\r\n|\n)","<br>");
+        
+        this.note.setContents(contents);
         request.setAttribute("note", note);
         
-        if (request.getParameter("edit") != null) {
-         getServletContext().getRequestDispatcher("/WEB-INF/editnote.jsp").forward(request, response);
-        } else {
-         getServletContext().getRequestDispatcher("/WEB-INF/viewnote.jsp").forward(request, response);   
+        String editNote = request.getParameter("edit");
+        
+        if (editNote !=null) {
+            getServletContext().getRequestDispatcher("/WEB-INF/editnote.jsp")
+                    .forward(request, response);
         }
+        else
+            getServletContext().getRequestDispatcher("/WEB-INF/viewnote.jsp")
+                    .forward(request, response);
     }
+    
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -67,7 +81,7 @@ public class NoteServlet extends HttpServlet {
         PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(path, false)));
 
         this.note.setTitle(request.getParameter("title"));
-        this.note.setContents(request.getParameter("content"));
+        this.note.setContents(request.getParameter("contents"));
        
         pw.println(this.note.getTitle());
         pw.println(this.note.getContents());
